@@ -21,12 +21,20 @@ const router = createRouter({
     {
       path: '/app',
       name: 'app',
+      beforeEnter: async (to: any) => {
+        console.log(to)
+      },
       component: () => import('../components/Layout/App/AppLayout.vue'),
       children: [
         {
           path: '',
           name: 'overview',
           component: () => import('../views/app/OverviewView.vue')
+        },
+        {
+          path: 'settings',
+          name: 'settings',
+          component: () => import('../views/app/SettingView.vue')
         }
       ]
     }
