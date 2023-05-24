@@ -14,8 +14,9 @@ const app = createApp(App)
 app.use(PrimeVue)
 
 //theme
-import 'primevue/resources/themes/tailwind-light/theme.css'
-
+import 'primevue/resources/themes/lara-light-blue/theme.css'
+//icon
+import 'primeicons/primeicons.css'
 //core
 import 'primevue/resources/primevue.min.css'
 

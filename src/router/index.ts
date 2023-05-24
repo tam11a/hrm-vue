@@ -11,6 +11,9 @@ const router = createRouter({
     {
       path: '/sign',
       name: 'sign',
+      beforeEnter: async () => {
+        if (!sessionStorage.getItem('org')) return { name: 'home' }
+      },
       component: () => import('../views/SignView.vue')
     },
     {
