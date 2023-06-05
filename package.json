@@ -17,11 +17,13 @@
     "@evilkiwi/form": "^1.0.9",
     "@tanstack/vue-query": "^4.29.7",
     "axios": "^1.4.0",
+    "nookies": "2.5.2",
     "pinia": "^2.0.36",
     "primeicons": "^6.0.1",
     "primevue": "^3.29.1",
     "url-join": "^5.0.0",
     "vue": "^3.3.2",
+    "vue-cookies": "^1.8.3",
     "vue-router": "^4.2.0"
   },
   "devDependencies": {

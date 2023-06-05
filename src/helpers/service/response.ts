@@ -3,7 +3,6 @@ import type { AxiosResponse } from 'axios'
 const handler = async (func: () => Promise<AxiosResponse>, accept: number | number[] = 200) => {
   try {
     const res = await func()
-    console.log(`[${new Date()}]`, res.status, '-->', res.data)
     if (res.status === accept || (typeof accept === 'object' && accept.includes(res.status))) {
       return {
         success: true,

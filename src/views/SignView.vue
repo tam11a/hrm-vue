@@ -4,14 +4,16 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import { RouterLink } from 'vue-router'
 import { getOrgDP, useLogin } from '../helpers/queries/auth/index'
-import { useRouter } from 'vue-router'
 import { useForm } from '@evilkiwi/form'
 import { handler } from '@/helpers/service/response'
+import type { VueCookies } from 'vue-cookies'
+import { inject } from 'vue'
+import { useToast } from 'primevue/usetoast'
 
-const router = useRouter()
+const toast = useToast()
 
+const $cookies = inject<VueCookies>('$cookies')
 var org = sessionStorage.getItem('org') || ''
-if (!org) router.replace('/')
 
 const { useField, handle: handleSubmit } = useForm<{ username: string; password: string }>({
   defaults: {
@@ -39,7 +41,25 @@ const onSubmit = handleSubmit(async (data: any) => {
       ...data
     })
   )
+
   console.log(res)
+
+  if (res.success) {
+    $cookies?.set('token', res.data.access_token)
+    toast.add({
+      severity: 'success',
+      summary: 'Logged in successfully',
+      detail: 'Welcome to BaniAdam',
+      life: 3000
+    })
+  } else {
+    toast.add({
+      severity: 'error',
+      summary: 'Log in failed',
+      detail: res.message,
+      life: 3000
+    })
+  }
 })
 </script>
 
