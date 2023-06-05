@@ -6,7 +6,6 @@ import { RouterLink } from 'vue-router'
 import { getOrgDP } from '../helpers/queries/auth/index'
 
 var org = sessionStorage.getItem('org') || ''
-console.log(getOrgDP(org))
 </script>
 
 <template>

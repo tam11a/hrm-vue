@@ -1,25 +1,26 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
-import { useForm } from 'vue-hooks-form'
+import { useForm } from '@evilkiwi/form'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const { useField, handleSubmit } = useForm({
-  defaultValues: {
+const { useField, handle: handleSubmit } = useForm<{ orgname: string }>({
+  defaults: {
     orgname: sessionStorage.getItem('org') || ''
   }
 })
 
 const orgname = useField('orgname', {
-  rule: { required: true }
+  required: true
 })
 
-const onSubmit = (data: any) => {
+const onSubmit = async (data: any) => {
   sessionStorage.setItem('org', data?.orgname)
   router.push('/sign')
 }
+
 const submitHandler = handleSubmit(onSubmit)
 </script>
 
@@ -27,7 +28,7 @@ const submitHandler = handleSubmit(onSubmit)
   <main class="flex flex-col items-center justify-center min-h-screen p-4">
     <form
       class="max-w-sm w-full mx-auto flex flex-col gap-2 p-5 bg-slate-100 rounded-md shadow-md shadow-slate-300"
-      @submit="submitHandler"
+      @submit.prevent="submitHandler"
     >
       <img src="/logo.png" class="max-w-xs mx-auto" />
       <p class="text-xs p-3 bg-slate-200 rounded-sm text-slate-500 font-medium">
@@ -41,7 +42,8 @@ const submitHandler = handleSubmit(onSubmit)
         <span class="p-inputgroup-addon">
           <i class="pi pi-building"></i>
         </span>
-        <InputText placeholder="Organization Name" v-model="orgname.value" :ref="orgname.ref" />
+        <input v-model="orgname.value" name="orgname" />
+        <InputText placeholder="Organization Name" v-model="orgname.value" name="orgname" />
         <Button icon="pi pi-arrow-right" severity="primary" type="submit" />
       </div>
       <p
