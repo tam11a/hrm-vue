@@ -11,7 +11,7 @@ export default defineConfig({
     open: '/'
   },
   build: {
-    outDir: 'build'
+    outDir: 'dist'
   },
   plugins: [vue(), vueJsx()],
   resolve: {
