@@ -3,15 +3,51 @@ import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import { RouterLink } from 'vue-router'
-import { getOrgDP } from '../helpers/queries/auth/index'
+import { getOrgDP, useLogin } from '../helpers/queries/auth/index'
+import { useRouter } from 'vue-router'
+import { useForm } from '@evilkiwi/form'
+import { handler } from '@/helpers/service/response'
+
+const router = useRouter()
 
 var org = sessionStorage.getItem('org') || ''
+if (!org) router.replace('/')
+
+const { useField, handle: handleSubmit } = useForm<{ username: string; password: string }>({
+  defaults: {
+    username: '',
+    password: ''
+  }
+})
+
+const username = useField('username', {
+  required: true
+})
+
+const password = useField('password', {
+  required: true
+})
+
+const { mutateAsync, isLoading } = useLogin()
+
+const onSubmit = handleSubmit(async (data: any) => {
+  const res = await handler(() =>
+    mutateAsync({
+      client_secret: import.meta.env.VITE_CLIENT_SECRET,
+      client_id: import.meta.env.VITE_CLIENT_ID,
+      grant_type: 'password',
+      ...data
+    })
+  )
+  console.log(res)
+})
 </script>
 
 <template>
   <main class="flex flex-col items-center justify-center min-h-screen p-4">
     <form
       class="max-w-sm w-full mx-auto flex flex-col gap-2 p-3 bg-slate-100 rounded-md shadow-md shadow-slate-300"
+      @submit.prevent="onSubmit"
     >
       <div class="flex flex-col gap-2 items-center justify-center">
         <img src="/logo.png" class="w-2/3" />
@@ -35,7 +71,13 @@ var org = sessionStorage.getItem('org') || ''
         <span class="p-inputgroup-addon">
           <i class="pi pi-user"></i>
         </span>
-        <InputText id="username" aria-describedby="username-help" placeholder="Email" />
+        <InputText
+          id="username"
+          aria-describedby="username-help"
+          placeholder="Email"
+          name="username"
+          v-model="username.value"
+        />
       </div>
       <!-- <small id="username-help">Enter your organization name to sign in your account.</small> -->
       <label for="password" class="font-bold text-sm">Password</label>
@@ -49,10 +91,12 @@ var org = sessionStorage.getItem('org') || ''
           toggleMask
           class="[&>input]:w-full"
           placeholder="Password"
+          name="password"
+          v-model="password.value"
         />
       </div>
       <!-- <small id="username-help">Enter your organization name to sign in your account.</small> -->
-      <Button type="button" label="Sign in" icon="pi" size="small" />
+      <Button type="submit" label="Sign in" icon="pi" size="small" :disabled="isLoading" />
     </form>
   </main>
 </template>
