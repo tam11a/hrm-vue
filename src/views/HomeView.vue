@@ -42,7 +42,6 @@ const submitHandler = handleSubmit(onSubmit)
         <span class="p-inputgroup-addon">
           <i class="pi pi-building"></i>
         </span>
-        <input v-model="orgname.value" name="orgname" />
         <InputText placeholder="Organization Name" v-model="orgname.value" name="orgname" />
         <Button icon="pi pi-arrow-right" severity="primary" type="submit" />
       </div>
