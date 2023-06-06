@@ -14,7 +14,6 @@ import router from './router'
 const app = createApp(App)
 
 app.use(PrimeVue)
-app.use(ToastService)
 
 //theme
 import 'primevue/resources/themes/lara-light-blue/theme.css'
@@ -22,6 +21,10 @@ import 'primevue/resources/themes/lara-light-blue/theme.css'
 import 'primeicons/primeicons.css'
 //core
 import 'primevue/resources/primevue.min.css'
+import Toast from 'primevue/toast'
+
+app.use(ToastService)
+app.component('ToastView', Toast)
 
 app.use(VueCookies)
 app.use(VueQueryPlugin)

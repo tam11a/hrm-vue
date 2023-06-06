@@ -1,8 +1,9 @@
 <script setup lang="ts">
+// Import Dependencies
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { getOrgDP, useLogin } from '../helpers/queries/auth/index'
 import { useForm } from '@evilkiwi/form'
 import { handler } from '@/helpers/service/response'
@@ -11,38 +12,43 @@ import { inject } from 'vue'
 import { useToast } from 'primevue/usetoast'
 
 const toast = useToast()
+const router = useRouter()
 
+// Collecting Local Data
 const $cookies = inject<VueCookies>('$cookies')
 var org = sessionStorage.getItem('org') || ''
 
-const { useField, handle: handleSubmit } = useForm<{ username: string; password: string }>({
+// Configuring Form
+const { useField, handle: handleSubmit } = useForm<{ Email: string; Password: string }>({
   defaults: {
-    username: '',
-    password: ''
+    Email: '', // Default Value
+    Password: '' // Default Value
   }
 })
 
-const username = useField('username', {
-  required: true
+const username = useField('Email', {
+  required: true,
+  type: 'email'
 })
 
-const password = useField('password', {
+const password = useField('Password', {
   required: true
 })
 
 const { mutateAsync, isLoading } = useLogin()
 
+// Login Form Submit Function
 const onSubmit = handleSubmit(async (data: any) => {
   const res = await handler(() =>
+    // Axios Request Handler
     mutateAsync({
       client_secret: import.meta.env.VITE_CLIENT_SECRET,
       client_id: import.meta.env.VITE_CLIENT_ID,
       grant_type: 'password',
-      ...data
+      username: data.Email,
+      password: data.Password
     })
   )
-
-  console.log(res)
 
   if (res.success) {
     $cookies?.set('token', res.data.access_token)
@@ -52,6 +58,7 @@ const onSubmit = handleSubmit(async (data: any) => {
       detail: 'Welcome to BaniAdam',
       life: 3000
     })
+    router.replace('/app')
   } else {
     toast.add({
       severity: 'error',
@@ -99,6 +106,12 @@ const onSubmit = handleSubmit(async (data: any) => {
           v-model="username.value"
         />
       </div>
+      <p
+        class="text-xs text-red-600 font-semibold text-center p-4 bg-red-200 rounded-sm"
+        v-if="username.hasError"
+      >
+        {{ username.error.message }}
+      </p>
       <!-- <small id="username-help">Enter your organization name to sign in your account.</small> -->
       <label for="password" class="font-bold text-sm">Password</label>
       <div class="p-inputgroup flex-1">
@@ -115,6 +128,12 @@ const onSubmit = handleSubmit(async (data: any) => {
           v-model="password.value"
         />
       </div>
+      <p
+        class="text-xs text-red-600 font-semibold text-center p-4 bg-red-200 rounded-sm"
+        v-if="password.hasError"
+      >
+        {{ password.error.message }}
+      </p>
       <!-- <small id="username-help">Enter your organization name to sign in your account.</small> -->
       <Button type="submit" label="Sign in" icon="pi" size="small" :disabled="isLoading" />
     </form>

@@ -1,3 +1,5 @@
+import { inject } from 'vue'
+import type { VueCookies } from 'vue-cookies'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -6,14 +8,21 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
+      beforeEnter: async () => {
+        const $cookies = inject<VueCookies>('$cookies')
+        if ($cookies?.get('token')) return { name: 'overview', replace: true }
+      },
       component: () => import('../views/HomeView.vue')
     },
     {
       path: '/sign',
       name: 'sign',
       beforeEnter: async () => {
-        if (!sessionStorage.getItem('org')) return { name: 'home' }
+        const $cookies = inject<VueCookies>('$cookies')
+        if ($cookies?.get('token')) return { name: 'overview', replace: true }
+        if (!$cookies?.get('org')) return { name: 'home', replace: true }
       },
+
       component: () => import('../views/SignView.vue')
     },
     {
@@ -25,7 +34,16 @@ const router = createRouter({
       path: '/app',
       name: 'app',
       beforeEnter: async (to: any) => {
-        console.log(to)
+        const $cookies = inject<VueCookies>('$cookies')
+        if (!$cookies?.get('token'))
+          return {
+            name: 'sign',
+            replace: true,
+            query: {
+              to: to.path
+            }
+          }
+        console.log($cookies?.get('token'), to)
       },
       component: () => import('../components/Layout/App/AppLayout.vue'),
       children: [

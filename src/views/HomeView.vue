@@ -3,12 +3,15 @@ import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import { useForm } from '@evilkiwi/form'
 import { useRouter } from 'vue-router'
+import type { VueCookies } from 'vue-cookies'
+import { inject } from 'vue'
 
 const router = useRouter()
+const $cookies = inject<VueCookies>('$cookies')
 
 const { useField, handle: handleSubmit } = useForm<{ orgname: string }>({
   defaults: {
-    orgname: sessionStorage.getItem('org') || ''
+    orgname: $cookies?.get('org') || ''
   }
 })
 
@@ -17,7 +20,7 @@ const orgname = useField('orgname', {
 })
 
 const onSubmit = async (data: any) => {
-  sessionStorage.setItem('org', data?.orgname)
+  $cookies?.set('org', data?.orgname)
   router.push('/sign')
 }
 
