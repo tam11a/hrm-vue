@@ -28,9 +28,10 @@ const authInterceptor = (config: InternalAxiosRequestConfig<any>): InterceptorRe
   return config
 }
 
+export const getOrg = () => sessionStorage.getItem('org') || localStorage.getItem('org')
+
 const orgInterceptor = (config: InternalAxiosRequestConfig<any>): InterceptorResponse => {
   // Checkout if the org handle is available in session or local storage
-  const getOrg = () => sessionStorage.getItem('org') || localStorage.getItem('org')
   // Checkout function if the URL is absolute
   const isAbsoluteURLRegex = () => /^(?:\w+:)\/\//.test(config.url || '')
   // if the org handle is not available return

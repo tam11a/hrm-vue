@@ -1,5 +1,6 @@
-import { inject } from 'vue'
-import type { VueCookies } from 'vue-cookies'
+import { getAuthToken, getOrg } from '@/helpers/service'
+// import { inject } from 'vue'
+// import type { VueCookies } from 'vue-cookies'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -9,8 +10,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       beforeEnter: async () => {
-        const $cookies = inject<VueCookies>('$cookies')
-        if ($cookies?.get('token')) return { name: 'overview', replace: true }
+        if (getAuthToken()) return { name: 'overview', replace: true }
       },
       component: () => import('../views/HomeView.vue')
     },
@@ -18,9 +18,8 @@ const router = createRouter({
       path: '/sign',
       name: 'sign',
       beforeEnter: async () => {
-        const $cookies = inject<VueCookies>('$cookies')
-        if ($cookies?.get('token')) return { name: 'overview', replace: true }
-        if (!$cookies?.get('org')) return { name: 'home', replace: true }
+        if (getAuthToken()) return { name: 'overview', replace: true }
+        if (getOrg()) return { name: 'home', replace: true }
       },
 
       component: () => import('../views/SignView.vue')
@@ -34,8 +33,7 @@ const router = createRouter({
       path: '/app',
       name: 'app',
       beforeEnter: async (to: any) => {
-        const $cookies = inject<VueCookies>('$cookies')
-        if (!$cookies?.get('token'))
+        if (!getAuthToken())
           return {
             name: 'sign',
             replace: true,
@@ -43,7 +41,6 @@ const router = createRouter({
               to: to.path
             }
           }
-        console.log($cookies?.get('token'), to)
       },
       component: () => import('../components/Layout/App/AppLayout.vue'),
       children: [

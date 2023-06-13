@@ -7,16 +7,16 @@ import { RouterLink, useRouter } from 'vue-router'
 import { getOrgDP, useLogin } from '../helpers/queries/auth/index'
 import { useForm } from '@evilkiwi/form'
 import { handler } from '@/helpers/service/response'
-import type { VueCookies } from 'vue-cookies'
-import { inject } from 'vue'
+// import type { VueCookies } from 'vue-cookies'
+// import { inject } from 'vue'
 import { useToast } from 'primevue/usetoast'
 
 const toast = useToast()
 const router = useRouter()
 
 // Collecting Local Data
-const $cookies = inject<VueCookies>('$cookies')
-var org = sessionStorage.getItem('org') || ''
+// const $cookies = inject<VueCookies>('$cookies')
+var org = localStorage.getItem('org') || '' // $cookies?.get('org') || ''
 
 // Configuring Form
 const { useField, handle: handleSubmit } = useForm<{ Email: string; Password: string }>({
@@ -51,7 +51,7 @@ const onSubmit = handleSubmit(async (data: any) => {
   )
 
   if (res.success) {
-    $cookies?.set('token', res.data.access_token)
+    localStorage.setItem('token', res.data.access_token)
     toast.add({
       severity: 'success',
       summary: 'Logged in successfully',

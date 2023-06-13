@@ -2,8 +2,7 @@
 
 <template>
   <div>
-    <h1>User Settings</h1>
+    <h1>Header</h1>
     <router-view />
-    <router-view name="helper" />
   </div>
 </template>
