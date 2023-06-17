@@ -19,7 +19,7 @@ const router = createRouter({
       name: 'sign',
       beforeEnter: async () => {
         if (getAuthToken()) return { name: 'overview', replace: true }
-        if (getOrg()) return { name: 'home', replace: true }
+        if (!getOrg()) return { name: 'home', replace: true }
       },
 
       component: () => import('../views/SignView.vue')
